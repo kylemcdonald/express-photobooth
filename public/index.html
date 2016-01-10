@@ -1,0 +1,114 @@
+<html>
+<head>
+<title>Photo Booth</title>
+
+<link href="//fonts.googleapis.com/css?family=Roboto:300,400,500,7[00" rel="stylesheet" type="text/css">
+
+<style>
+body, html {
+  margin: 0;
+  padding: 0;
+}
+.layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.cover {
+  width: 100%;
+  height: 100%;
+  object-position: 50% 50%;
+  object-fit: cover;
+}
+#mask {
+  opacity: 0.25;
+}
+.hidden {
+  opacity: 0;
+}
+.visible {
+  opacity: 1;
+}
+.fadeout {
+    -webkit-transition: opacity 1s ease-in-out;
+    -moz-transition: opacity 1s ease-in-out;
+    -ms-transition: opacity 1s ease-in-out;
+    -o-transition: opacity 1s ease-in-out;
+     opacity: 0;
+}
+</style>
+
+</head>
+
+<body>
+  <div class="layer">
+    <video autoplay class="cover"></video>
+  </div>
+
+  <div class="layer">
+    <canvas class="cover hidden"></canvas>
+  </div>
+
+  <div class="layer">
+    <img src="mask.png" class="cover" id="mask"/>
+  </div>
+
+  <script src="js/canvas-to-blob.js"></script>
+  <script src="js/adapter.js"></script>
+  <script src="js/common.js"></script>
+  <script src="//code.jquery.com/jquery-2.2.0.min.js"></script>
+
+<script>
+function uploadCanvas(canvas, url, mimetype) {
+  canvas.toBlob(
+        function (blob) {
+            var req = new XMLHttpRequest();
+            req.open('POST', url, true);
+            req.onload = function (event) {
+              console.log('Uploaded photo successfully:');
+              console.log(event);
+            };
+            console.log('Uploading photo:');
+            console.log(blob);
+            req.send(blob);
+        },
+        mimetype
+  );
+}
+
+var video = document.querySelector('video');
+var canvas = window.canvas = document.querySelector('canvas');
+var button = document.querySelector('#mask');
+button.onclick = function() {
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  canvas.getContext('2d').
+    drawImage(video, 0, 0, canvas.width, canvas.height);
+  canvas.className = 'cover visible';
+  setTimeout(function() {
+    canvas.className = 'cover fadeout';    
+  }, 1000);
+  uploadCanvas(canvas, './upload', 'image/jpeg');
+};
+
+var constraints = {
+  audio: false,
+  video: true
+};
+
+function successCallback(stream) {
+  window.stream = stream;
+  video.srcObject = stream;
+}
+
+function errorCallback(error) {
+  console.log('navigator.getUserMedia error: ', error);
+}
+
+navigator.getUserMedia(constraints, successCallback, errorCallback);
+</script>
+
+</body>
+</html>
