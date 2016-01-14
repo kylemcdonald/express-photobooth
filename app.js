@@ -12,7 +12,6 @@ app.get('/', function (req, res) {
 });
 
 app.post('/upload', function(req, res) {
-	console.log(req.query);
 	var cameraId = req.query.cameraId;
 	var dir = 'uploads/';
 	mkdirp(dir, function (err) {
