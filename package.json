@@ -12,6 +12,7 @@
   "dependencies": {
     "body-parser": "^1.14.2",
     "express": "^4.12.4",
+    "mkdirp": "^0.5.1",
     "node-osc": "^1.1.0"
   }
 }
