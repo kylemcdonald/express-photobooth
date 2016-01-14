@@ -11,6 +11,7 @@
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.14.2",
-    "express": "^4.12.4"
+    "express": "^4.12.4",
+    "node-osc": "^1.1.0"
   }
 }
